@@ -45,7 +45,7 @@ class Deck():
         cardsList = []
         manaCurve = {}
         colorIdentity = {"W":0, "U":0, "B":0, "R":0, "G":0}
-        logging.info("Starting Scryfall query for cards in deck list, this will take some time.")
+        logging.info("Starting Scryfall query for cards in deck list, this will take some time.\n")
         firstTimestamp = time.time()
         for cardStr in cardStrList:
             logging.info(f"Adding card {cardStr} to deck.")
