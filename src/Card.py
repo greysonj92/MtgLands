@@ -65,7 +65,9 @@ class Deck():
             colorIdentity[color] += 1
 
     def updateManaCurve(self, card, manaCurve):
-        if card.CMC not in manaCurve:
+        if card.isLand:
+            pass
+        elif card.CMC not in manaCurve:
             manaCurve[card.CMC] = 1
         else:
             manaCurve[card.CMC] += 1
@@ -90,3 +92,9 @@ if __name__ == '__main__':
                 deckList.append(tempStr)
 
     testDeck = Deck(deckList)
+    print("Your deck's mana curve:\n")
+    for i in sorted(testDeck.manaCurve.keys()):
+        tempBar = ""
+        for j in range(testDeck.manaCurve[i]):
+            tempBar += "|"
+        print(i,": ", tempBar, testDeck.manaCurve[i])
