@@ -2,6 +2,8 @@
 import Constants
 import time
 import requests
+import os
+import logging
 from collections import Counter
 
 class Card():
@@ -43,12 +45,17 @@ class Deck():
         cardsList = []
         manaCurve = {}
         colorIdentity = {"W":0, "U":0, "B":0, "R":0, "G":0}
+        logging.info("Starting Scryfall query for cards in deck list, this will take some time.")
+        firstTimestamp = time.time()
         for cardStr in cardStrList:
+            logging.info(f"Adding card {cardStr} to deck.")
             tempCard = Card(cardStr)
             cardsList.append(tempCard)
             # TODO: maybe check if the tempcard is a land here to decide if it should update the color identity of the deck
             self.updateManaCurve(tempCard, manaCurve)
             self.updateColorIdentity(tempCard, colorIdentity)
+        secondTimestamp = time.time()
+        logging.info(f"Took {secondTimestamp - firstTimestamp} seconds to query Scryfall for deck list.")
         self.cardsList = cardsList
         self.manaCurve = manaCurve
         self.colorIdentity = colorIdentity
@@ -63,7 +70,23 @@ class Deck():
         else:
             manaCurve[card.CMC] += 1
 
+    def setWithoutLands(self):
+        self.withoutLands = []
+        for card in self.cardsList:
+            if not card.isLand:
+                self.withoutLands.append(card)
+
 if __name__ == '__main__':
-    cardsList = ["Esper Sentinel", "Glittering Wish"]
-    testDeck = Deck(cardsList)
-    print("hello")
+    # test reading a decklist from file
+    logging.basicConfig(level=logging.INFO)
+    deckList = []
+    print(os.getcwd())
+    fileName = os.path.join(os.getcwd(), r"src\testDecks\Deck - Ur-Dragon.txt")
+    with open(fileName, "r") as file:
+        for line in file:
+            tempStr = line[2:]
+            tempStr = tempStr.rstrip()
+            if len(tempStr) > 0:
+                deckList.append(tempStr)
+
+    testDeck = Deck(deckList)
